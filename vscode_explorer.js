@@ -786,13 +786,69 @@
     if (btnModeVSCode) btnModeVSCode.addEventListener("click", () => setViewMode("vscode"));
     if (btnModeSplit) btnModeSplit.addEventListener("click", () => setViewMode("split"));
 
-    // Activity Bar Navigation
+    // Sidebar Toggle Functionality (Maximize codespace view)
+    const workspaceBody = document.getElementById("vsc-workspace-body");
+    const toggleSidebarBtn = document.getElementById("vsc-btn-toggle-sidebar");
+    const collapseSidebarBtn = document.getElementById("vsc-btn-collapse-sidebar");
+    const toggleSidebarText = document.getElementById("vsc-sidebar-toggle-text");
+    const toggleSidebarIcon = document.getElementById("vsc-sidebar-toggle-icon");
+
+    function setSidebarVisibility(visible) {
+      if (!workspaceBody) return;
+      if (visible) {
+        workspaceBody.classList.remove("sidebar-hidden");
+        if (toggleSidebarBtn) toggleSidebarBtn.classList.add("active-state");
+        if (toggleSidebarText) toggleSidebarText.textContent = "Hide Sidebar";
+        if (toggleSidebarIcon) toggleSidebarIcon.textContent = "◨";
+      } else {
+        workspaceBody.classList.add("sidebar-hidden");
+        if (toggleSidebarBtn) toggleSidebarBtn.classList.remove("active-state");
+        if (toggleSidebarText) toggleSidebarText.textContent = "Show Sidebar";
+        if (toggleSidebarIcon) toggleSidebarIcon.textContent = "◧";
+      }
+    }
+
+    function toggleSidebar() {
+      if (!workspaceBody) return;
+      const isCurrentlyHidden = workspaceBody.classList.contains("sidebar-hidden");
+      setSidebarVisibility(isCurrentlyHidden);
+    }
+
+    if (toggleSidebarBtn) toggleSidebarBtn.addEventListener("click", toggleSidebar);
+    if (collapseSidebarBtn) collapseSidebarBtn.addEventListener("click", () => setSidebarVisibility(false));
+
+    // Keyboard Shortcut (Ctrl+B / Cmd+B) like authentic VS Code
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        const vscContainer = document.getElementById("vscode-explorer-container");
+        if (vscContainer && vscContainer.style.display !== "none") {
+          e.preventDefault();
+          toggleSidebar();
+        }
+      }
+    });
+
+    // Activity Bar Navigation with Click-to-Toggle behavior
     const actBtns = document.querySelectorAll(".vsc-activity-btn");
     actBtns.forEach(btn => {
       btn.addEventListener("click", () => {
+        const targetView = btn.dataset.view;
+        const isAlreadyActive = btn.classList.contains("active");
+        const isSidebarHidden = workspaceBody && workspaceBody.classList.contains("sidebar-hidden");
+
+        // If clicking active button while visible, collapse sidebar
+        if (isAlreadyActive && !isSidebarHidden) {
+          setSidebarVisibility(false);
+          return;
+        }
+
+        // If sidebar is hidden, open it
+        if (isSidebarHidden) {
+          setSidebarVisibility(true);
+        }
+
         actBtns.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
-        const targetView = btn.dataset.view;
         currentActiveTabSidebar = targetView;
 
         document.querySelectorAll(".vsc-sidebar-panel").forEach(p => p.classList.remove("active"));

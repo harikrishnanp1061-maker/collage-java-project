@@ -448,6 +448,9 @@
           <span class="vsc-repo-badge">📂 collage java project / project code / src</span>
         </div>
         <div class="vsc-title-actions">
+          <button class="vsc-head-btn active-state" id="vsc-btn-toggle-sidebar" title="Toggle File Explorer Sidebar (Ctrl+B / Cmd+B)">
+            <span id="vsc-sidebar-toggle-icon">◨</span><span id="vsc-sidebar-toggle-text">Hide Sidebar</span>
+          </button>
           <button class="vsc-head-btn" id="vsc-btn-copy-code" title="Copy active file content">
             <span>📋</span><span>Copy Code</span>
           </button>
@@ -458,15 +461,15 @@
       </div>
 
       <!-- VS Code Workspace Body -->
-      <div class="vsc-body">
+      <div class="vsc-body" id="vsc-workspace-body">
         
         <!-- Activity Bar (Narrow left strip) -->
         <nav class="vsc-activity-bar">
-          <button class="vsc-activity-btn active" data-view="explorer" title="Explorer (Files & Folders)">
+          <button class="vsc-activity-btn active" data-view="explorer" title="Explorer (Files & Folders) - Click to toggle sidebar">
             <span class="vsc-act-icon">📁</span>
             <span class="vsc-act-label">Files</span>
           </button>
-          <button class="vsc-activity-btn" data-view="search" title="Search across all code">
+          <button class="vsc-activity-btn" data-view="search" title="Search across all code - Click to toggle sidebar">
             <span class="vsc-act-icon">🔍</span>
             <span class="vsc-act-label">Search</span>
           </button>
@@ -477,13 +480,16 @@
         </nav>
 
         <!-- Sidebar Panel -->
-        <aside class="vsc-sidebar">
+        <aside class="vsc-sidebar" id="vsc-main-sidebar">
           
           <!-- Panel 1: Explorer (Folder/File Tree) -->
           <div class="vsc-sidebar-panel active" id="vsc-panel-explorer">
             <div class="vsc-panel-header">
               <span class="vsc-panel-title">EXPLORER: COLLAGE JAVA PROJECT</span>
-              <span class="vsc-file-count-badge">20 Files</span>
+              <div class="vsc-header-actions">
+                <span class="vsc-file-count-badge">32 Files</span>
+                <button class="vsc-panel-collapse-btn" id="vsc-btn-collapse-sidebar" title="Hide Sidebar (Maximize Code View)">◀</button>
+              </div>
             </div>
             <div class="vsc-tree-container" id="vsc-file-tree">
               <!-- Dynamically rendered by vscode_explorer.js -->

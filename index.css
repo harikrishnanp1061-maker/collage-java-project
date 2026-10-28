@@ -1026,6 +1026,12 @@ body {
   flex-direction: column;
   overflow: hidden;
   flex-shrink: 0;
+  transition: width 0.2s ease;
+}
+
+/* Sidebar hidden: full codespace view */
+.vsc-body.sidebar-hidden .vsc-sidebar {
+  display: none !important;
 }
 
 .vsc-sidebar-panel {
@@ -1037,6 +1043,33 @@ body {
 
 .vsc-sidebar-panel.active {
   display: flex;
+}
+
+.vsc-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vsc-panel-collapse-btn {
+  background: transparent;
+  border: none;
+  color: #858585;
+  font-size: 10px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+
+.vsc-panel-collapse-btn:hover {
+  background: #3c3c3c;
+  color: #ffffff;
+}
+
+.vsc-head-btn.active-state {
+  border-color: #007acc;
+  color: #38bdf8;
 }
 
 .vsc-panel-header {
