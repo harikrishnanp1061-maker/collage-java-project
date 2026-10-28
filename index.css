@@ -588,6 +588,17 @@ body {
   background: #dc2626;
 }
 
+.btn-warning {
+  background: var(--amber);
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  background: #d97706;
+  color: white;
+}
+
 .btn-outline {
   background: transparent;
   color: var(--text-primary);

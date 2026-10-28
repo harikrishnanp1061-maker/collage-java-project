@@ -493,6 +493,36 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("safety-modal").classList.remove("active");
   });
 
+  // Edit Item Modal Handlers
+  const editModal = document.getElementById("edit-item-modal");
+  const editForm = document.getElementById("edit-item-form");
+  const btnCloseEditModal = document.getElementById("btn-close-edit-modal");
+
+  if (btnCloseEditModal && editModal) {
+    btnCloseEditModal.addEventListener("click", () => {
+      editModal.classList.remove("active");
+    });
+  }
+
+  if (editForm && editModal) {
+    editForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const id = document.getElementById("edit-item-id").value;
+      const item = store.items.find(i => i.id === id);
+      if (item) {
+        item.name = document.getElementById("edit-item-name").value.trim();
+        item.category = document.getElementById("edit-item-category").value;
+        item.unit = document.getElementById("edit-item-unit").value.trim();
+        item.basePrice = parseFloat(document.getElementById("edit-item-price").value) || 0;
+        item.expiryDate = document.getElementById("edit-item-expiry").value;
+        store.saveItems();
+        renderAllViews();
+        editModal.classList.remove("active");
+        showToast(`Item "${item.name}" specifications updated!`, "success");
+      }
+    });
+  }
+
   // Print Receipt Button
   document.getElementById("btn-print-receipt").addEventListener("click", () => {
     const text = document.getElementById("receipt-output").innerText;
@@ -754,24 +784,56 @@ function renderManagementTable() {
   const tbody = document.getElementById("management-tbody");
   if (!tbody) return;
 
+  if (store.items.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:2rem; color:var(--text-muted);">No items in inventory. All item records have been purged. Use Module A or Reset Demo to add items.</td></tr>`;
+    return;
+  }
+
   tbody.innerHTML = store.items.map(item => `
     <tr>
       <td><code>${item.id}</code></td>
       <td><strong>${item.name}</strong></td>
       <td>${item.category}</td>
-      <td><strong>${item.quantity}</strong> ${item.unit}</td>
+      <td>
+        <strong style="color:${item.quantity === 0 ? 'var(--rose)' : 'inherit'};">${item.quantity}</strong> ${item.unit}
+        ${item.quantity === 0 ? '<span style="display:block; font-size:0.72rem; color:var(--rose); font-weight:700;">(0 Stock - Written Off)</span>' : ''}
+      </td>
       <td>₹${item.basePrice.toFixed(2)}</td>
       <td>${item.expiryDate}</td>
       <td>
-        <button class="btn btn-outline-sm" onclick="quickRestock('${item.id}', 10)">+10</button>
-        <button class="btn btn-outline-sm" onclick="quickRestock('${item.id}', 25)">+25</button>
+        <div style="display:flex; gap:0.4rem;">
+          <button class="btn btn-outline-sm" onclick="quickRestock('${item.id}', 10)">+10</button>
+          <button class="btn btn-outline-sm" onclick="quickRestock('${item.id}', 25)">+25</button>
+        </div>
       </td>
       <td>
-        <button class="btn btn-danger btn-sm" onclick="deleteStockItem('${item.id}')">Write Off</button>
+        <div style="display:flex; gap:0.4rem; flex-wrap:wrap; align-items:center;">
+          <button class="btn btn-outline-sm" onclick="openEditItemModal('${item.id}')" title="Edit item specifications">Edit</button>
+          <button class="btn btn-warning btn-sm" onclick="writeOffStock('${item.id}')" title="Write off physical stock (set quantity to 0) while keeping item record in catalog">
+            Write-Off (0 Qty)
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStockItemCompletely('${item.id}')" title="Permanently delete item info from database">
+            Delete Info Completely
+          </button>
+        </div>
       </td>
     </tr>
   `).join('');
 }
+
+window.openEditItemModal = function(itemId) {
+  const item = store.items.find(i => i.id === itemId);
+  if (!item) return;
+
+  document.getElementById("edit-item-id").value = item.id;
+  document.getElementById("edit-item-name").value = item.name;
+  document.getElementById("edit-item-category").value = item.category;
+  document.getElementById("edit-item-unit").value = item.unit;
+  document.getElementById("edit-item-price").value = item.basePrice;
+  document.getElementById("edit-item-expiry").value = item.expiryDate;
+
+  document.getElementById("edit-item-modal").classList.add("active");
+};
 
 window.quickRestock = function(itemId, qty) {
   store.updateStock(itemId, qty);
@@ -779,11 +841,31 @@ window.quickRestock = function(itemId, qty) {
   showToast(`Restocked +${qty} units!`, "info");
 };
 
-window.deleteStockItem = function(itemId) {
-  if (confirm(`Are you sure you want to write off / delete item ${itemId}?`)) {
+window.writeOffStock = function(itemId) {
+  const item = store.items.find(i => i.id === itemId);
+  if (!item) return;
+
+  if (item.quantity === 0) {
+    showToast(`Stock for "${item.name}" is already 0.`, "info");
+    return;
+  }
+
+  if (confirm(`Write off physical stock for "${item.name}" (${item.id})?\n\nQuantity will be set to 0 (damaged/discarded), but the food item info and history will remain preserved in the catalog.`)) {
+    item.quantity = 0;
+    store.saveItems();
+    renderAllViews();
+    showToast(`Physical stock for "${item.name}" written off (Quantity: 0). Item preserved in catalog.`, "warning");
+  }
+};
+
+window.deleteStockItemCompletely = function(itemId) {
+  const item = store.items.find(i => i.id === itemId);
+  const name = item ? item.name : itemId;
+
+  if (confirm(`PERMANENTLY DELETE item info for "${name}" (${itemId})?\n\n⚠️ This will completely purge this item and all its information from the database and catalog.`)) {
     store.deleteItem(itemId);
     renderAllViews();
-    showToast(`Item ${itemId} written off.`, "info");
+    showToast(`"${name}" (${itemId}) was permanently deleted from the database.`, "danger");
   }
 };
 

@@ -47,6 +47,7 @@ public class ManagementPanel extends JPanel implements ActionListener {
     private JTextField txtRestockQty;
     private JButton btnRestock;
     private JButton btnUpdate;
+    private JButton btnWriteOff;
     private JButton btnDelete;
 
     private FoodBankDAO dao;
@@ -166,12 +167,21 @@ public class ManagementPanel extends JPanel implements ActionListener {
         btnUpdate.addActionListener(this);
         actionButtons.add(btnUpdate);
 
-        btnDelete = new JButton("Write-Off / Delete Item");
+        btnWriteOff = new JButton("Write-Off Stock (Set to 0)");
+        btnWriteOff.setOpaque(true);
+        btnWriteOff.setBackground(new Color(185, 105, 25));
+        btnWriteOff.setForeground(Color.WHITE);
+        btnWriteOff.setFont(new Font("Arial", Font.BOLD, 12));
+        btnWriteOff.setPreferredSize(new Dimension(195, 32));
+        btnWriteOff.addActionListener(this);
+        actionButtons.add(btnWriteOff);
+
+        btnDelete = new JButton("Permanently Delete Item Info");
         btnDelete.setOpaque(true);
         btnDelete.setBackground(new Color(175, 40, 40));
         btnDelete.setForeground(Color.WHITE);
         btnDelete.setFont(new Font("Arial", Font.BOLD, 12));
-        btnDelete.setPreferredSize(new Dimension(170, 32));
+        btnDelete.setPreferredSize(new Dimension(205, 32));
         btnDelete.addActionListener(this);
         actionButtons.add(btnDelete);
 
@@ -241,6 +251,8 @@ public class ManagementPanel extends JPanel implements ActionListener {
             performRestock();
         } else if (e.getSource() == btnUpdate) {
             performUpdate();
+        } else if (e.getSource() == btnWriteOff) {
+            performWriteOff();
         } else if (e.getSource() == btnDelete) {
             performDelete();
         }
@@ -314,23 +326,55 @@ public class ManagementPanel extends JPanel implements ActionListener {
         }
     }
 
-    private void performDelete() {
+    private void performWriteOff() {
         String id = txtId.getText().trim();
         if (id.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select an item to write off.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Please select an item first.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
         int choice = JOptionPane.showConfirmDialog(this, 
-                "Are you sure you want to write-off / delete item [" + id + " - " + txtName.getText() + "]?", 
-                "Confirm Write-Off", 
+                "Write-off all physical stock for [" + id + " - " + txtName.getText() + "]?\nQuantity will be set to 0, but the item record will remain in the catalog.", 
+                "Confirm Stock Write-Off", 
                 JOptionPane.YES_NO_OPTION);
+
+        if (choice == JOptionPane.YES_OPTION) {
+            try {
+                FoodItem current = dao.getItemById(id);
+                if (current != null) {
+                    current.setQuantity(0.0);
+                    boolean ok = dao.updateItem(current);
+                    if (ok) {
+                        txtCurrentQty.setText("0.0");
+                        JOptionPane.showMessageDialog(this, "Physical stock written off (Quantity set to 0).\nItem record remains preserved in catalog.", "Stock Written Off", JOptionPane.INFORMATION_MESSAGE);
+                        mainFrame.refreshAllViews();
+                    }
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Write-off failed: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    private void performDelete() {
+        String id = txtId.getText().trim();
+        if (id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please select an item to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int choice = JOptionPane.showConfirmDialog(this, 
+                "PERMANENTLY DELETE item info for [" + id + " - " + txtName.getText() + "]?\n\nThis will completely purge this item and all its information from the database and catalog.", 
+                "Confirm Complete Deletion", 
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
 
         if (choice == JOptionPane.YES_OPTION) {
             try {
                 boolean ok = dao.deleteItem(id);
                 if (ok) {
-                    JOptionPane.showMessageDialog(this, "Item removed from inventory successfully.", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    clearFields();
+                    JOptionPane.showMessageDialog(this, "Item info permanently deleted from the database.\nRecord completely removed from catalog.", "Item Removed", JOptionPane.INFORMATION_MESSAGE);
                     mainFrame.refreshAllViews();
                 }
             } catch (Exception ex) {
