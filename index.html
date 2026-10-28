@@ -15,6 +15,24 @@
       <span class="emulator-coffee-icon">☕</span>
       <span>Java(TM) SE Runtime Virtual Environment — Swing / AWT GUI Emulation</span>
     </div>
+    
+    <!-- Primary View Switcher: Outside Interface Window -->
+    <div class="emulator-view-switcher">
+      <button class="emulator-mode-tab active" id="btn-mode-swing" title="View Java Swing Application Window">
+        <span>☕</span>
+        <span>Swing App Window</span>
+      </button>
+      <button class="emulator-mode-tab" id="btn-mode-vscode" title="View Full Project Code in VS Code Explorer">
+        <span>💻</span>
+        <span>Codebase Explorer (VS Code)</span>
+        <span class="mode-badge">20 Files</span>
+      </button>
+      <button class="emulator-mode-tab" id="btn-mode-split" title="Side-by-Side Split View">
+        <span>◫</span>
+        <span>Split View</span>
+      </button>
+    </div>
+
     <div class="emulator-host-actions">
       <button class="emulator-pill-btn" id="btn-toggle-window-mode">
         <span id="window-mode-icon">⛶</span>
@@ -22,11 +40,11 @@
       </button>
       <button class="emulator-pill-btn" id="btn-host-reset-db">
         <span>🔄</span>
-        <span>Reset SQLite Database</span>
+        <span>Reset Database</span>
       </button>
       <button class="emulator-pill-btn" id="btn-open-viva-dialog">
         <span>📖</span>
-        <span>Code & Viva Guide (JDialog)</span>
+        <span>Viva & OOP Guide (JDialog)</span>
       </button>
     </div>
   </header>
@@ -415,6 +433,146 @@
 
     </div>
 
+    <!-- ============================================================ -->
+    <!-- VS CODE CODEBASE EXPLORER & SEARCH ENGINE (Outside Interface) -->
+    <!-- ============================================================ -->
+    <div class="vsc-window" id="vscode-explorer-container" style="display: none;">
+      
+      <!-- VS Code Window Header -->
+      <div class="vsc-titlebar">
+        <div class="vsc-title-left">
+          <span class="vsc-brand-icon">💻</span>
+          <span class="vsc-app-name">ChronoChef Codebase — Visual Studio Code (Workspace)</span>
+        </div>
+        <div class="vsc-title-center">
+          <span class="vsc-repo-badge">📂 collage java project / project code / src</span>
+        </div>
+        <div class="vsc-title-actions">
+          <button class="vsc-head-btn" id="vsc-btn-copy-code" title="Copy active file content">
+            <span>📋</span><span>Copy Code</span>
+          </button>
+          <button class="vsc-head-btn" id="vsc-btn-download-file" title="Download active Java file">
+            <span>📥</span><span>Download .java</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- VS Code Workspace Body -->
+      <div class="vsc-body">
+        
+        <!-- Activity Bar (Narrow left strip) -->
+        <nav class="vsc-activity-bar">
+          <button class="vsc-activity-btn active" data-view="explorer" title="Explorer (Files & Folders)">
+            <span class="vsc-act-icon">📁</span>
+            <span class="vsc-act-label">Files</span>
+          </button>
+          <button class="vsc-activity-btn" data-view="search" title="Search across all code">
+            <span class="vsc-act-icon">🔍</span>
+            <span class="vsc-act-label">Search</span>
+          </button>
+          <button class="vsc-activity-btn" data-view="oop" title="OOP Implementation Mapping (PBCST304)">
+            <span class="vsc-act-icon">🎓</span>
+            <span class="vsc-act-label">OOP Map</span>
+          </button>
+        </nav>
+
+        <!-- Sidebar Panel -->
+        <aside class="vsc-sidebar">
+          
+          <!-- Panel 1: Explorer (Folder/File Tree) -->
+          <div class="vsc-sidebar-panel active" id="vsc-panel-explorer">
+            <div class="vsc-panel-header">
+              <span class="vsc-panel-title">EXPLORER: COLLAGE JAVA PROJECT</span>
+              <span class="vsc-file-count-badge">20 Files</span>
+            </div>
+            <div class="vsc-tree-container" id="vsc-file-tree">
+              <!-- Dynamically rendered by vscode_explorer.js -->
+            </div>
+          </div>
+
+          <!-- Panel 2: Global Search Engine -->
+          <div class="vsc-sidebar-panel" id="vsc-panel-search">
+            <div class="vsc-panel-header">
+              <span class="vsc-panel-title">SEARCH CODEBASE</span>
+            </div>
+            <div class="vsc-search-box-wrap">
+              <div class="vsc-input-group">
+                <span class="vsc-input-icon">🔍</span>
+                <input type="text" id="vsc-search-input" class="vsc-search-input" placeholder="Search files, classes, code..." autocomplete="off">
+                <button class="vsc-clear-btn" id="vsc-clear-search" title="Clear search">✕</button>
+              </div>
+              <div class="vsc-quick-tags">
+                <span class="vsc-quick-pill" onclick="document.getElementById('vsc-search-input').value='FoodItem'; document.getElementById('vsc-search-input').dispatchEvent(new Event('input'))">FoodItem</span>
+                <span class="vsc-quick-pill" onclick="document.getElementById('vsc-search-input').value='PDI'; document.getElementById('vsc-search-input').dispatchEvent(new Event('input'))">PDI</span>
+                <span class="vsc-quick-pill" onclick="document.getElementById('vsc-search-input').value='Bubble'; document.getElementById('vsc-search-input').dispatchEvent(new Event('input'))">BubbleSort</span>
+                <span class="vsc-quick-pill" onclick="document.getElementById('vsc-search-input').value='Singleton'; document.getElementById('vsc-search-input').dispatchEvent(new Event('input'))">Singleton</span>
+                <span class="vsc-quick-pill" onclick="document.getElementById('vsc-search-input').value='Exception'; document.getElementById('vsc-search-input').dispatchEvent(new Event('input'))">Exceptions</span>
+              </div>
+            </div>
+            <div class="vsc-search-results-area" id="vsc-search-results">
+              <div class="vsc-search-placeholder">
+                <div class="vsc-placeholder-icon">🔍</div>
+                <div>Type any class name, method, or keyword to search across all 20 Java source files.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Panel 3: OOP Implementation Directory -->
+          <div class="vsc-sidebar-panel" id="vsc-panel-oop">
+            <div class="vsc-panel-header">
+              <span class="vsc-panel-title">OOP CONCEPTS (PBCST304)</span>
+            </div>
+            <div class="vsc-oop-catalog-container" id="vsc-oop-catalog">
+              <!-- Dynamically populated by vscode_explorer.js -->
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Main Code Editor -->
+        <section class="vsc-editor-pane">
+          
+          <!-- Tabs Bar -->
+          <div class="vsc-tabs-bar" id="vsc-tabs-bar">
+            <!-- Dynamically populated tabs -->
+          </div>
+
+          <!-- Breadcrumbs Bar -->
+          <div class="vsc-breadcrumbs-bar">
+            <div class="vsc-breadcrumbs" id="vsc-breadcrumbs">
+              <!-- Breadcrumbs path -->
+            </div>
+            <div class="vsc-file-meta" id="vsc-file-meta">
+              <!-- Class type and package badges -->
+            </div>
+          </div>
+
+          <!-- Code Content Display -->
+          <div class="vsc-code-scroll-pane">
+            <div class="vsc-code-editor-content" id="vsc-code-editor-content">
+              <!-- Syntax highlighted code lines -->
+            </div>
+          </div>
+
+          <!-- VS Code Status Bar -->
+          <footer class="vsc-status-bar">
+            <div class="vsc-status-left">
+              <span class="vsc-status-item">🔷 Java SE (OpenJDK 21)</span>
+              <span class="vsc-status-item">📁 project code/src</span>
+              <span class="vsc-status-item">⚡ MVC Pattern</span>
+            </div>
+            <div class="vsc-status-right">
+              <span class="vsc-status-item" id="vsc-status-stats">Lines: 170 | UTF-8</span>
+              <span class="vsc-status-item">Tab Size: 4</span>
+              <span class="vsc-status-item">🎓 KTU PBCST304</span>
+            </div>
+          </footer>
+
+        </section>
+
+      </div>
+    </div>
+
   </main>
 
   <!-- Swing JDialog Modal: College Viva & Architecture Guide -->
@@ -483,6 +641,9 @@
     </div>
   </div>
 
+  <!-- Project Codebase Data & Explorer Script -->
+  <script src="project_codebase.js"></script>
+  <script src="vscode_explorer.js"></script>
   <!-- App Script -->
   <script src="app.js"></script>
 </body>
