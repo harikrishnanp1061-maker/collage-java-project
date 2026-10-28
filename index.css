@@ -1666,3 +1666,236 @@ body {
   gap: 4px;
 }
 
+/* ==========================================================================
+   14. CODE VIEW ZOOM & MOBILE RESPONSIVE ENGINE
+   ========================================================================== */
+
+/* Zoom & Tools in Breadcrumbs & Titlebar */
+.vsc-header-zoom {
+  display: flex;
+  align-items: center;
+  background: #252526;
+  border: 1px solid #3c3c3c;
+  border-radius: 4px;
+  padding: 1px 4px;
+  gap: 2px;
+}
+
+.vsc-code-view-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vsc-tool-btn {
+  background: #252526;
+  border: 1px solid #3c3c3c;
+  color: #cccccc;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.vsc-tool-btn:hover,
+.vsc-tool-btn.active {
+  background: #007acc;
+  color: #ffffff;
+  border-color: #007acc;
+}
+
+.vsc-zoom-group {
+  display: inline-flex;
+  align-items: center;
+  background: #252526;
+  border: 1px solid #3c3c3c;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.vsc-zoom-btn {
+  background: transparent;
+  border: none;
+  color: #cccccc;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.vsc-zoom-btn:hover {
+  background: #007acc;
+  color: #ffffff;
+}
+
+.vsc-zoom-label {
+  padding: 2px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #9cdcfe;
+  min-width: 40px;
+  text-align: center;
+  font-family: Consolas, monospace;
+}
+
+.vsc-zoom-reset {
+  background: #333333;
+  border: none;
+  border-left: 1px solid #3c3c3c;
+  color: #858585;
+  padding: 2px 6px;
+  font-size: 9.5px;
+  cursor: pointer;
+}
+
+.vsc-zoom-reset:hover {
+  color: #ffffff;
+  background: #007acc;
+}
+
+/* Word Wrap Mode */
+.vsc-code-editor-content.word-wrap-enabled .vsc-code-line {
+  white-space: pre-wrap !important;
+}
+
+.vsc-code-editor-content.word-wrap-enabled .vsc-line-content {
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+}
+
+/* Mobile Screens Optimization (Phones <= 768px) */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  .emulator-host-bar {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    padding: 8px;
+  }
+
+  .emulator-tag {
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .emulator-view-switcher {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .emulator-mode-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 6px 4px;
+    font-size: 10px;
+  }
+
+  .emulator-host-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .desktop-workspace {
+    padding: 4px !important;
+  }
+
+  /* VS Code Window Mobile Sizing */
+  .vsc-window {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: calc(100vh - 120px) !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    border-radius: 4px !important;
+  }
+
+  .vsc-titlebar {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .vsc-title-center {
+    display: none; /* Hide long path badge on phone screens */
+  }
+
+  .vsc-title-left {
+    font-size: 10.5px;
+  }
+
+  .vsc-title-actions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .vsc-title-actions .vsc-head-btn {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  /* When sidebar is open on phone, overlay or scale */
+  .vsc-sidebar {
+    width: 240px !important;
+    position: relative;
+    z-index: 10;
+  }
+
+  .vsc-activity-bar {
+    width: 40px !important;
+  }
+
+  .vsc-activity-btn {
+    width: 36px !important;
+    height: 42px !important;
+  }
+
+  .vsc-breadcrumbs-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 8px;
+  }
+
+  .vsc-code-view-tools {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .vsc-file-meta {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .vsc-line-num {
+    width: 36px !important;
+    padding-right: 8px !important;
+  }
+
+  .vsc-code-scroll-pane {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Split view on mobile converts to full width stack */
+  .desktop-workspace.mode-split {
+    flex-direction: column !important;
+  }
+
+  .desktop-workspace.mode-split .jframe-window,
+  .desktop-workspace.mode-split .vsc-window {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+

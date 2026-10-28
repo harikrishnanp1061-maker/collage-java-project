@@ -448,14 +448,20 @@
           <span class="vsc-repo-badge">📂 collage java project / project code / src</span>
         </div>
         <div class="vsc-title-actions">
+          <!-- Quick Zoom Controls (Especially helpful on Mobile Phones) -->
+          <div class="vsc-header-zoom">
+            <button class="vsc-zoom-btn" id="vsc-head-zoom-out" title="Zoom Out Code View (A-)">A−</button>
+            <span class="vsc-zoom-label" id="vsc-head-zoom-display">100%</span>
+            <button class="vsc-zoom-btn" id="vsc-head-zoom-in" title="Zoom In Code View (A+)">A+</button>
+          </div>
           <button class="vsc-head-btn active-state" id="vsc-btn-toggle-sidebar" title="Toggle File Explorer Sidebar (Ctrl+B / Cmd+B)">
             <span id="vsc-sidebar-toggle-icon">◨</span><span id="vsc-sidebar-toggle-text">Hide Sidebar</span>
           </button>
           <button class="vsc-head-btn" id="vsc-btn-copy-code" title="Copy active file content">
-            <span>📋</span><span>Copy Code</span>
+            <span>📋</span><span>Copy</span>
           </button>
           <button class="vsc-head-btn" id="vsc-btn-download-file" title="Download active Java file">
-            <span>📥</span><span>Download .java</span>
+            <span>📥</span><span>Download</span>
           </button>
         </div>
       </div>
@@ -543,11 +549,25 @@
             <!-- Dynamically populated tabs -->
           </div>
 
-          <!-- Breadcrumbs Bar -->
+          <!-- Breadcrumbs Bar & Code Controls -->
           <div class="vsc-breadcrumbs-bar">
             <div class="vsc-breadcrumbs" id="vsc-breadcrumbs">
               <!-- Breadcrumbs path -->
             </div>
+            
+            <!-- Code Zoom & Wrap Tools -->
+            <div class="vsc-code-view-tools">
+              <button class="vsc-tool-btn" id="vsc-btn-wrap-lines" title="Toggle Word Wrap (Great for mobile screens)">
+                <span id="vsc-wrap-icon">↩</span><span class="vsc-tool-label">Wrap</span>
+              </button>
+              <div class="vsc-zoom-group">
+                <button class="vsc-zoom-btn" id="vsc-btn-zoom-out" title="Zoom Out Code (−)">−</button>
+                <span class="vsc-zoom-label" id="vsc-zoom-display" title="Current Zoom Scale">100%</span>
+                <button class="vsc-zoom-btn" id="vsc-btn-zoom-in" title="Zoom In Code (+)">+</button>
+                <button class="vsc-zoom-reset" id="vsc-btn-zoom-reset" title="Reset Zoom to 100%">Reset</button>
+              </div>
+            </div>
+
             <div class="vsc-file-meta" id="vsc-file-meta">
               <!-- Class type and package badges -->
             </div>

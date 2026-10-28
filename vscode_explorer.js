@@ -470,6 +470,9 @@
       codeArea.innerHTML = highlightCode(file.content, file.fileName, queryToHighlight);
     }
 
+    // Re-apply active zoom scale to newly rendered code lines
+    applyCurrentZoom();
+
     // Status bar stats
     const statsEl = document.getElementById("vsc-status-stats");
     if (statsEl) {
@@ -915,6 +918,77 @@
         URL.revokeObjectURL(url);
       });
     }
+
+    // Code Zoom & Mobile Sizing Engine
+    const btnZoomOut = document.getElementById("vsc-btn-zoom-out");
+    const btnZoomIn = document.getElementById("vsc-btn-zoom-in");
+    const btnZoomReset = document.getElementById("vsc-btn-zoom-reset");
+    const headZoomOut = document.getElementById("vsc-head-zoom-out");
+    const headZoomIn = document.getElementById("vsc-head-zoom-in");
+
+    if (btnZoomOut) btnZoomOut.addEventListener("click", () => applyZoom(currentZoomIdx - 1));
+    if (btnZoomIn) btnZoomIn.addEventListener("click", () => applyZoom(currentZoomIdx + 1));
+    if (btnZoomReset) btnZoomReset.addEventListener("click", () => applyZoom(5)); // 100%
+
+    if (headZoomOut) headZoomOut.addEventListener("click", () => applyZoom(currentZoomIdx - 1));
+    if (headZoomIn) headZoomIn.addEventListener("click", () => applyZoom(currentZoomIdx + 1));
+
+    // Word Wrap Toggle (Great for narrow mobile phone screens)
+    const btnWrap = document.getElementById("vsc-btn-wrap-lines");
+    if (btnWrap) {
+      btnWrap.addEventListener("click", () => {
+        const codeContent = document.getElementById("vsc-code-editor-content");
+        if (codeContent) {
+          const isWrapped = codeContent.classList.toggle("word-wrap-enabled");
+          btnWrap.classList.toggle("active", isWrapped);
+        }
+      });
+    }
+
+    // Mobile Auto-Configuration on Startup
+    if (window.innerWidth <= 768) {
+      // Auto-collapse sidebar on phone so full screen is dedicated to code
+      setSidebarVisibility(false);
+      // Auto-enable word wrap on mobile
+      const codeContent = document.getElementById("vsc-code-editor-content");
+      if (codeContent) codeContent.classList.add("word-wrap-enabled");
+      if (btnWrap) btnWrap.classList.add("active");
+    }
+
+    // Initial Zoom Application
+    applyCurrentZoom();
+  }
+
+  // Global Code Zoom Scale State
+  const zoomLevels = [50, 60, 70, 80, 90, 100, 115, 130, 150];
+  let currentZoomIdx = window.innerWidth <= 768 ? 3 : 5; // 80% on mobile, 100% on desktop
+
+  function applyZoom(idx) {
+    if (idx < 0) idx = 0;
+    if (idx >= zoomLevels.length) idx = zoomLevels.length - 1;
+    currentZoomIdx = idx;
+    applyCurrentZoom();
+  }
+
+  function applyCurrentZoom() {
+    const scale = zoomLevels[currentZoomIdx];
+    const codeContent = document.getElementById("vsc-code-editor-content");
+    if (codeContent) {
+      codeContent.style.fontSize = `${12.5 * (scale / 100)}px`;
+      codeContent.style.lineHeight = `${20 * (scale / 100)}px`;
+    }
+
+    // Update line number gutter
+    document.querySelectorAll(".vsc-line-num").forEach(numEl => {
+      numEl.style.width = `${Math.max(26, 48 * (scale / 100))}px`;
+      numEl.style.fontSize = `${11 * (scale / 100)}px`;
+    });
+
+    // Update display labels
+    const label1 = document.getElementById("vsc-zoom-display");
+    const label2 = document.getElementById("vsc-head-zoom-display");
+    if (label1) label1.textContent = `${scale}%`;
+    if (label2) label2.textContent = `${scale}%`;
   }
 
   // Auto-init on DOMContentLoaded
