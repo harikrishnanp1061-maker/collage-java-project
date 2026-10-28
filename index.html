@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   <title>ChronoChef - Smart Dynamic Pricing & Expiry Tracker for Food Banks</title>
   <meta name="description" content="ChronoChef Java Swing & AWT Runtime Emulator - College Project (PBCST304) Object Oriented Programming.">
   <link rel="stylesheet" href="index.css">
@@ -25,7 +25,7 @@
       <button class="emulator-mode-tab" id="btn-mode-vscode" title="View Full Project Code in VS Code Explorer">
         <span>💻</span>
         <span>Codebase Explorer (VS Code)</span>
-        <span class="mode-badge">20 Files</span>
+        <span class="mode-badge">32 Files</span>
       </button>
       <button class="emulator-mode-tab" id="btn-mode-split" title="Side-by-Side Split View">
         <span>◫</span>
@@ -469,6 +469,9 @@
       <!-- VS Code Workspace Body -->
       <div class="vsc-body" id="vsc-workspace-body">
         
+        <!-- Mobile Sidebar Backdrop (tap to dismiss drawer on mobile) -->
+        <div class="vsc-sidebar-backdrop" id="vsc-sidebar-backdrop"></div>
+
         <!-- Activity Bar (Narrow left strip) -->
         <nav class="vsc-activity-bar">
           <button class="vsc-activity-btn active" data-view="explorer" title="Explorer (Files & Folders) - Click to toggle sidebar">
@@ -491,10 +494,11 @@
           <!-- Panel 1: Explorer (Folder/File Tree) -->
           <div class="vsc-sidebar-panel active" id="vsc-panel-explorer">
             <div class="vsc-panel-header">
-              <span class="vsc-panel-title">EXPLORER: COLLAGE JAVA PROJECT</span>
+              <span class="vsc-panel-title">EXPLORER: CODEBASE</span>
               <div class="vsc-header-actions">
                 <span class="vsc-file-count-badge">32 Files</span>
                 <button class="vsc-panel-collapse-btn" id="vsc-btn-collapse-sidebar" title="Hide Sidebar (Maximize Code View)">◀</button>
+                <button class="vsc-mobile-panel-close" id="vsc-m-close-explorer" title="Close">✕</button>
               </div>
             </div>
             <div class="vsc-tree-container" id="vsc-file-tree">
@@ -506,6 +510,7 @@
           <div class="vsc-sidebar-panel" id="vsc-panel-search">
             <div class="vsc-panel-header">
               <span class="vsc-panel-title">SEARCH CODEBASE</span>
+              <button class="vsc-mobile-panel-close" id="vsc-m-close-search" title="Close">✕</button>
             </div>
             <div class="vsc-search-box-wrap">
               <div class="vsc-input-group">
@@ -524,7 +529,7 @@
             <div class="vsc-search-results-area" id="vsc-search-results">
               <div class="vsc-search-placeholder">
                 <div class="vsc-placeholder-icon">🔍</div>
-                <div>Type any class name, method, or keyword to search across all 20 Java source files.</div>
+                <div>Type any class name, method, or keyword to search across all 32 project files and 10,295 lines.</div>
               </div>
             </div>
           </div>
@@ -533,6 +538,7 @@
           <div class="vsc-sidebar-panel" id="vsc-panel-oop">
             <div class="vsc-panel-header">
               <span class="vsc-panel-title">OOP CONCEPTS (PBCST304)</span>
+              <button class="vsc-mobile-panel-close" id="vsc-m-close-oop" title="Close">✕</button>
             </div>
             <div class="vsc-oop-catalog-container" id="vsc-oop-catalog">
               <!-- Dynamically populated by vscode_explorer.js -->
@@ -555,7 +561,7 @@
               <!-- Breadcrumbs path -->
             </div>
             
-            <!-- Code Zoom & Wrap Tools -->
+            <!-- Code Zoom & Wrap Tools (Desktop) -->
             <div class="vsc-code-view-tools">
               <button class="vsc-tool-btn" id="vsc-btn-wrap-lines" title="Toggle Word Wrap (Great for mobile screens)">
                 <span id="vsc-wrap-icon">↩</span><span class="vsc-tool-label">Wrap</span>
@@ -571,6 +577,24 @@
             <div class="vsc-file-meta" id="vsc-file-meta">
               <!-- Class type and package badges -->
             </div>
+          </div>
+
+          <!-- Dedicated Mobile Floating Code Zoom & Nav Bar -->
+          <div class="vsc-mobile-zoom-bar" id="vsc-mobile-zoom-bar">
+            <button class="vsc-mzb-btn vsc-mzb-files" id="vsc-mzb-toggle-sidebar" title="Browse Files & Folders">
+              <span>📁</span><span>Files</span>
+            </button>
+            <div class="vsc-mzb-zoom-pills">
+              <button class="vsc-mzb-step-btn" id="vsc-mzb-zoom-out" title="Zoom Out Code (Smaller)">−</button>
+              <button class="vsc-mzb-preset" data-zoom="35" title="Bird's Eye (35%)">35%</button>
+              <button class="vsc-mzb-preset active" data-zoom="50" title="Fit Mobile (50%)">50%</button>
+              <button class="vsc-mzb-preset" data-zoom="70" title="Medium (70%)">70%</button>
+              <button class="vsc-mzb-preset" data-zoom="100" title="Standard (100%)">100%</button>
+              <button class="vsc-mzb-step-btn" id="vsc-mzb-zoom-in" title="Zoom In Code (Larger)">+</button>
+            </div>
+            <button class="vsc-mzb-btn vsc-mzb-wrap" id="vsc-mzb-wrap" title="Toggle Word Wrap">
+              <span id="vsc-mzb-wrap-icon">↩</span><span>Wrap</span>
+            </button>
           </div>
 
           <!-- Code Content Display -->

@@ -16,6 +16,8 @@
   let activeFileKey = "project code/src/model/FoodItem.java";
   let currentActiveTabSidebar = "explorer";
   let currentSearchQuery = "";
+  let setSidebarVisibility = null;
+  let toggleSidebar = null;
 
   function normalizePath(p) {
     return p ? p.replace(/\\/g, "/") : "";
@@ -363,6 +365,11 @@
     renderExplorerTree();
     renderTabs();
     renderActiveFile();
+
+    // On mobile devices, auto-collapse sidebar drawer when selecting a file
+    if (window.innerWidth <= 768 && typeof setSidebarVisibility === "function") {
+      setSidebarVisibility(false);
+    }
 
     if (targetLine) {
       setTimeout(() => {
@@ -796,29 +803,42 @@
     const toggleSidebarText = document.getElementById("vsc-sidebar-toggle-text");
     const toggleSidebarIcon = document.getElementById("vsc-sidebar-toggle-icon");
 
-    function setSidebarVisibility(visible) {
+    setSidebarVisibility = function(visible) {
       if (!workspaceBody) return;
+      const backdrop = document.getElementById("vsc-sidebar-backdrop");
       if (visible) {
         workspaceBody.classList.remove("sidebar-hidden");
         if (toggleSidebarBtn) toggleSidebarBtn.classList.add("active-state");
         if (toggleSidebarText) toggleSidebarText.textContent = "Hide Sidebar";
         if (toggleSidebarIcon) toggleSidebarIcon.textContent = "◨";
+        if (backdrop) backdrop.classList.add("active");
       } else {
         workspaceBody.classList.add("sidebar-hidden");
         if (toggleSidebarBtn) toggleSidebarBtn.classList.remove("active-state");
         if (toggleSidebarText) toggleSidebarText.textContent = "Show Sidebar";
         if (toggleSidebarIcon) toggleSidebarIcon.textContent = "◧";
+        if (backdrop) backdrop.classList.remove("active");
       }
-    }
+    };
 
-    function toggleSidebar() {
+    toggleSidebar = function() {
       if (!workspaceBody) return;
       const isCurrentlyHidden = workspaceBody.classList.contains("sidebar-hidden");
       setSidebarVisibility(isCurrentlyHidden);
-    }
+    };
 
     if (toggleSidebarBtn) toggleSidebarBtn.addEventListener("click", toggleSidebar);
     if (collapseSidebarBtn) collapseSidebarBtn.addEventListener("click", () => setSidebarVisibility(false));
+
+    // Backdrop click on mobile closes sidebar drawer
+    const backdropEl = document.getElementById("vsc-sidebar-backdrop");
+    if (backdropEl) backdropEl.addEventListener("click", () => setSidebarVisibility(false));
+
+    // Mobile Panel Close buttons (✕ in header)
+    ["vsc-m-close-explorer", "vsc-m-close-search", "vsc-m-close-oop"].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.addEventListener("click", () => setSidebarVisibility(false));
+    });
 
     // Keyboard Shortcut (Ctrl+B / Cmd+B) like authentic VS Code
     document.addEventListener("keydown", (e) => {
@@ -925,23 +945,81 @@
     const btnZoomReset = document.getElementById("vsc-btn-zoom-reset");
     const headZoomOut = document.getElementById("vsc-head-zoom-out");
     const headZoomIn = document.getElementById("vsc-head-zoom-in");
+    const mzbZoomOut = document.getElementById("vsc-mzb-zoom-out");
+    const mzbZoomIn = document.getElementById("vsc-mzb-zoom-in");
+    const mzbToggleSidebar = document.getElementById("vsc-mzb-toggle-sidebar");
+    const mzbWrap = document.getElementById("vsc-mzb-wrap");
 
     if (btnZoomOut) btnZoomOut.addEventListener("click", () => applyZoom(currentZoomIdx - 1));
     if (btnZoomIn) btnZoomIn.addEventListener("click", () => applyZoom(currentZoomIdx + 1));
-    if (btnZoomReset) btnZoomReset.addEventListener("click", () => applyZoom(5)); // 100%
+    if (btnZoomReset) btnZoomReset.addEventListener("click", () => applyZoomByScale(100));
 
     if (headZoomOut) headZoomOut.addEventListener("click", () => applyZoom(currentZoomIdx - 1));
     if (headZoomIn) headZoomIn.addEventListener("click", () => applyZoom(currentZoomIdx + 1));
 
-    // Word Wrap Toggle (Great for narrow mobile phone screens)
+    if (mzbZoomOut) mzbZoomOut.addEventListener("click", () => applyZoom(currentZoomIdx - 1));
+    if (mzbZoomIn) mzbZoomIn.addEventListener("click", () => applyZoom(currentZoomIdx + 1));
+    if (mzbToggleSidebar) mzbToggleSidebar.addEventListener("click", toggleSidebar);
+
+    // Mobile Zoom Presets (35%, 50%, 70%, 100%)
+    document.querySelectorAll(".vsc-mzb-preset").forEach(pBtn => {
+      pBtn.addEventListener("click", () => {
+        const targetZoom = parseInt(pBtn.dataset.zoom, 10);
+        applyZoomByScale(targetZoom);
+      });
+    });
+
+    // Word Wrap Toggle (Synchronized across desktop and mobile bars)
     const btnWrap = document.getElementById("vsc-btn-wrap-lines");
-    if (btnWrap) {
-      btnWrap.addEventListener("click", () => {
-        const codeContent = document.getElementById("vsc-code-editor-content");
-        if (codeContent) {
-          const isWrapped = codeContent.classList.toggle("word-wrap-enabled");
-          btnWrap.classList.toggle("active", isWrapped);
+    function toggleWordWrap() {
+      const codeContent = document.getElementById("vsc-code-editor-content");
+      if (codeContent) {
+        const isWrapped = codeContent.classList.toggle("word-wrap-enabled");
+        if (btnWrap) btnWrap.classList.toggle("active", isWrapped);
+        if (mzbWrap) mzbWrap.classList.toggle("active", isWrapped);
+      }
+    }
+
+    if (btnWrap) btnWrap.addEventListener("click", toggleWordWrap);
+    if (mzbWrap) mzbWrap.addEventListener("click", toggleWordWrap);
+
+    // Touch pinch-to-zoom on code pane for smartphones
+    const scrollPane = document.querySelector(".vsc-code-scroll-pane");
+    if (scrollPane) {
+      let initialDist = 0;
+      let startIdx = currentZoomIdx;
+
+      scrollPane.addEventListener("touchstart", (e) => {
+        if (e.touches.length === 2) {
+          initialDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          startIdx = currentZoomIdx;
         }
+      }, { passive: true });
+
+      scrollPane.addEventListener("touchmove", (e) => {
+        if (e.touches.length === 2 && initialDist > 0) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const ratio = currentDist / initialDist;
+          if (ratio < 0.72) {
+            applyZoom(startIdx - 2);
+          } else if (ratio < 0.86) {
+            applyZoom(startIdx - 1);
+          } else if (ratio > 1.35) {
+            applyZoom(startIdx + 2);
+          } else if (ratio > 1.15) {
+            applyZoom(startIdx + 1);
+          }
+        }
+      }, { passive: true });
+
+      scrollPane.addEventListener("touchend", () => {
+        initialDist = 0;
       });
     }
 
@@ -953,6 +1031,7 @@
       const codeContent = document.getElementById("vsc-code-editor-content");
       if (codeContent) codeContent.classList.add("word-wrap-enabled");
       if (btnWrap) btnWrap.classList.add("active");
+      if (mzbWrap) mzbWrap.classList.add("active");
     }
 
     // Initial Zoom Application
@@ -960,14 +1039,28 @@
   }
 
   // Global Code Zoom Scale State
-  const zoomLevels = [50, 60, 70, 80, 90, 100, 115, 130, 150];
-  let currentZoomIdx = window.innerWidth <= 768 ? 3 : 5; // 80% on mobile, 100% on desktop
+  // Allows zooming out all the way to 30% so full lines fit cleanly on phone screens
+  const zoomLevels = [30, 35, 40, 50, 60, 70, 80, 90, 100, 115, 130, 150];
+  let currentZoomIdx = window.innerWidth <= 768 ? 3 : 8; // Index 3 is 50% on mobile, index 8 is 100% on desktop
 
   function applyZoom(idx) {
     if (idx < 0) idx = 0;
     if (idx >= zoomLevels.length) idx = zoomLevels.length - 1;
     currentZoomIdx = idx;
     applyCurrentZoom();
+  }
+
+  function applyZoomByScale(targetScale) {
+    let closestIdx = 0;
+    let minDiff = 9999;
+    zoomLevels.forEach((scale, i) => {
+      const diff = Math.abs(scale - targetScale);
+      if (diff < minDiff) {
+        minDiff = diff;
+        closestIdx = i;
+      }
+    });
+    applyZoom(closestIdx);
   }
 
   function applyCurrentZoom() {
@@ -978,10 +1071,11 @@
       codeContent.style.lineHeight = `${20 * (scale / 100)}px`;
     }
 
-    // Update line number gutter
+    // Update line number gutter: compact for small scales on mobile
     document.querySelectorAll(".vsc-line-num").forEach(numEl => {
-      numEl.style.width = `${Math.max(26, 48 * (scale / 100))}px`;
-      numEl.style.fontSize = `${11 * (scale / 100)}px`;
+      const numWidth = Math.max(22, Math.round(48 * (scale / 100)));
+      numEl.style.width = `${numWidth}px`;
+      numEl.style.fontSize = `${Math.max(8, 11 * (scale / 100))}px`;
     });
 
     // Update display labels
@@ -989,6 +1083,12 @@
     const label2 = document.getElementById("vsc-head-zoom-display");
     if (label1) label1.textContent = `${scale}%`;
     if (label2) label2.textContent = `${scale}%`;
+
+    // Highlight active preset button on mobile zoom bar
+    document.querySelectorAll(".vsc-mzb-preset").forEach(pBtn => {
+      const pScale = parseInt(pBtn.dataset.zoom, 10);
+      pBtn.classList.toggle("active", Math.abs(pScale - scale) <= 5);
+    });
   }
 
   // Auto-init on DOMContentLoaded
