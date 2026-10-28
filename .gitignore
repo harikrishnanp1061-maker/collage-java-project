@@ -1,0 +1,27 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Compiled Java Bytecode
+project code/bin/**/*.class
+bin/**/*.class
+*.class
+
+# Temporary / Scratch files
+scratch/
+temp/
+extracted_media/
+*.tmp
+*.log
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# IDE configs
+.idea/
+*.iml

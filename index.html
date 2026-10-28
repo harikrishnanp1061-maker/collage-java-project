@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChronoChef — Smart Dynamic Pricing & Expiry Tracker for Food Banks</title>
+  <meta name="description" content="ChronoChef is a Java-based smart dynamic pricing and expiry management system for food banks and community relief shelters. Try the interactive web edition.">
+  <meta name="theme-color" content="#1e3a8a">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body data-theme="dark">
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">ChronoChef</span>
+          <span class="brand-badge">College Java Project (PBCST304)</span>
+        </div>
+      </div>
+
+      <nav class="nav-links" id="main-nav">
+        <button class="nav-btn active" data-tab="tab-inventory" id="btn-nav-inventory">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+          <span>Live Inventory</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-distribution" id="btn-nav-distribution">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg>
+          <span>Distribution Checkout</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-input" id="btn-nav-input">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          <span>Intake Donation</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-management" id="btn-nav-management">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          <span>Stock Manage</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-analytics" id="btn-nav-analytics">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>
+          <span>Impact Analytics</span>
+        </button>
+
+        <button class="nav-btn" data-tab="tab-architecture" id="btn-nav-architecture">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span>Code & Viva</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="action-btn-sm" id="btn-reset-db" title="Reset sample database to original 10 items">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>
+          <span>Reset Demo</span>
+        </button>
+        <button class="theme-toggle" id="btn-theme-toggle" title="Toggle Dark/Light Mode">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container (CardLayout Simulation) -->
+  <main class="main-content">
+
+    <!-- ============================================================== -->
+    <!-- TAB 1: LIVE INVENTORY & EXPIRY TRACKER (Module B) -->
+    <!-- ============================================================== -->
+    <section class="tab-panel active" id="tab-inventory">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Module B: Priority Expiry & Live Inventory Board</h1>
+          <p class="panel-desc">Real-time shelf-life tracking powered by the mathematical <b>Priority Distribution Index (PDI)</b> formula and in-memory <b>Bubble Sort</b>.</p>
+        </div>
+        <div class="panel-cta-group">
+          <button class="btn btn-primary" id="btn-trigger-bubblesort">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16 4 4 4-4"></path><path d="M7 20V4"></path><path d="m21 8-4-4-4 4"></path><path d="M17 4v16"></path></svg>
+            <span>Run Bubble Sort by Urgency</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats Banner -->
+      <div class="metrics-grid">
+        <div class="metric-card urgent">
+          <div class="metric-label">Urgent Items (0-2 Days)</div>
+          <div class="metric-value" id="kpi-urgent-count">0</div>
+          <div class="metric-sub">100% Subsidy (Free Clearance)</div>
+        </div>
+        <div class="metric-card warning">
+          <div class="metric-label">High Priority (3-7 Days)</div>
+          <div class="metric-value" id="kpi-high-count">0</div>
+          <div class="metric-sub">50% Relief Subsidy Tier</div>
+        </div>
+        <div class="metric-card normal">
+          <div class="metric-label">Safe Shelf-Life (&gt;7 Days)</div>
+          <div class="metric-value" id="kpi-safe-count">0</div>
+          <div class="metric-sub">Standard Inventory Price</div>
+        </div>
+        <div class="metric-card danger">
+          <div class="metric-label">Quarantined (Expired)</div>
+          <div class="metric-value" id="kpi-expired-count">0</div>
+          <div class="metric-sub">Safety Blocked (0 Distribution)</div>
+        </div>
+      </div>
+
+      <!-- Table Toolbar -->
+      <div class="table-toolbar">
+        <div class="search-input-wrap">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" id="inventory-search" placeholder="Search by name, category, or batch number...">
+        </div>
+        <div class="filter-group">
+          <select id="filter-category" class="select-control">
+            <option value="ALL">All Categories</option>
+            <option value="Dairy">Dairy</option>
+            <option value="Produce">Produce</option>
+            <option value="Bakery">Bakery</option>
+            <option value="Grains">Grains</option>
+            <option value="Canned Goods">Canned Goods</option>
+          </select>
+          <select id="filter-urgency" class="select-control">
+            <option value="ALL">All Urgency Tiers</option>
+            <option value="URGENT">Urgent (PDI 90-100)</option>
+            <option value="HIGH">High (PDI 70-89)</option>
+            <option value="MEDIUM">Medium (PDI 40-69)</option>
+            <option value="LOW">Low (PDI 1-39)</option>
+            <option value="EXPIRED">Expired (PDI 0)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Inventory Table -->
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="data-table" id="inventory-table">
+            <thead>
+              <tr>
+                <th>Item ID</th>
+                <th>Food Item Name</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Stock Qty</th>
+                <th>Expiry Date</th>
+                <th>Days Left ($D$)</th>
+                <th>PDI Score</th>
+                <th>Status Badge</th>
+                <th>Base Price</th>
+                <th>Storage Instruction (Polymorphic)</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 2: DISTRIBUTION & SUBSIDY BILLING (Module D) -->
+    <!-- ============================================================== -->
+    <section class="tab-panel" id="tab-distribution">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Module D: Dynamic Subsidy & Shelter Checkout Station</h1>
+          <p class="panel-desc">Calculates automated zero-waste subsidies and enforces compile-time safety by preventing expired food distribution.</p>
+        </div>
+      </div>
+
+      <div class="checkout-layout">
+        <!-- Form Column -->
+        <div class="card checkout-form-card">
+          <h2 class="card-title">1. Dispatch Form</h2>
+          <form id="distribution-form">
+            <div class="form-group">
+              <label for="dist-item-select">Select Food Item from Live Inventory</label>
+              <select id="dist-item-select" class="form-control" required>
+                <option value="">-- Choose item to dispatch --</option>
+              </select>
+            </div>
+
+            <div class="item-specs-banner" id="dist-item-preview" style="display: none;">
+              <div class="preview-row">
+                <span>Days Remaining:</span> <strong id="prev-days-left">-</strong>
+              </div>
+              <div class="preview-row">
+                <span>Priority Index:</span> <strong id="prev-pdi">-</strong>
+              </div>
+              <div class="preview-row">
+                <span>Available Stock:</span> <strong id="prev-stock">-</strong>
+              </div>
+              <div class="preview-row">
+                <span>Base Price / Unit:</span> <strong id="prev-base-price">-</strong>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-6">
+                <label for="dist-qty">Quantity to Dispatch</label>
+                <input type="number" id="dist-qty" class="form-control" min="1" placeholder="e.g. 10" required>
+              </div>
+              <div class="form-group col-6">
+                <label for="dist-shelter">Recipient Shelter / Organization</label>
+                <input type="text" id="dist-shelter" class="form-control" placeholder="e.g. St. Jude Relief Kitchen" required>
+              </div>
+            </div>
+
+            <!-- Dynamic Pricing Preview Box -->
+            <div class="subsidy-calc-card" id="subsidy-calc-card">
+              <div class="calc-row">
+                <span>Original Gross Value:</span>
+                <span id="calc-original-value">₹0.00</span>
+              </div>
+              <div class="calc-row subsidy-highlight">
+                <span>Dynamic Urgency Subsidy Tier:</span>
+                <span id="calc-subsidy-tier">0% (Standard)</span>
+              </div>
+              <div class="calc-row subsidy-saved">
+                <span>Total Relief Subsidy Granted:</span>
+                <span id="calc-subsidy-saved">-₹0.00</span>
+              </div>
+              <div class="calc-row total-row">
+                <span>Final Clearance Charge:</span>
+                <span class="total-badge" id="calc-final-price">₹0.00</span>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-success btn-lg" id="btn-confirm-dist">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <span>Confirm Distribution & Print Receipt</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Receipt Slip Column -->
+        <div class="card receipt-preview-card">
+          <div class="receipt-header">
+            <h2 class="card-title">2. Distribution Receipt Slip</h2>
+            <button class="btn btn-outline-sm" id="btn-print-receipt">Print / Copy</button>
+          </div>
+          <div class="receipt-terminal" id="receipt-output">
+============================================================
+              CHRONOCHEF FOOD BANK DISTRIBUTION SYSTEM
+============================================================
+Ready for checkout transaction...
+Select an item and confirm distribution to generate an itemized
+ASCII transaction receipt.
+============================================================
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 3: DATA INTAKE (Module A) -->
+    <!-- ============================================================== -->
+    <section class="tab-panel" id="tab-input">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Module A: Food Donation Registration Interface</h1>
+          <p class="panel-desc">Register incoming donations into the warehouse with strict data validation, encapsulated fields, and polymorphic storage dispatch.</p>
+        </div>
+      </div>
+
+      <div class="card form-container-card">
+        <form id="intake-form">
+          <div class="form-grid">
+            <div class="form-group col-4">
+              <label for="in-id">Item Code / Batch ID</label>
+              <input type="text" id="in-id" class="form-control" placeholder="e.g. FD-1011" required>
+            </div>
+
+            <div class="form-group col-8">
+              <label for="in-name">Food Item Name</label>
+              <input type="text" id="in-name" class="form-control" placeholder="e.g. Fresh Brown Eggs (Dozen)" required>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="in-category">Food Category</label>
+              <select id="in-category" class="form-control" required>
+                <option value="Dairy">Dairy</option>
+                <option value="Produce">Produce</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Grains">Grains</option>
+                <option value="Canned Goods">Canned Goods</option>
+                <option value="Meat/Protein">Meat/Protein</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="in-type">Item Subclass Type (OOP)</label>
+              <select id="in-type" class="form-control" required>
+                <option value="PERISHABLE">PerishableItem (Cold Chain)</option>
+                <option value="PACKAGED">PackagedItem (Dry Shelf Goods)</option>
+              </select>
+            </div>
+
+            <div class="form-group col-4" id="grp-optimum-temp">
+              <label for="in-temp">Refrigeration Temp (&deg;C)</label>
+              <input type="number" id="in-temp" class="form-control" value="4.0" step="0.5">
+            </div>
+
+            <div class="form-group col-4" id="grp-batch-num" style="display: none;">
+              <label for="in-batch">Manufacturer Lot / Batch #</label>
+              <input type="text" id="in-batch" class="form-control" placeholder="e.g. BATCH-EGGS-442">
+            </div>
+
+            <div class="form-group col-4">
+              <label for="in-qty">Quantity Donated</label>
+              <input type="number" id="in-qty" class="form-control" min="1" value="20" required>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="in-unit">Packaging Unit</label>
+              <input type="text" id="in-unit" class="form-control" placeholder="e.g. Cartons, kg, Packs" value="Units" required>
+            </div>
+
+            <div class="form-group col-4">
+              <label for="in-price">Base Fair-Market Value (₹)</label>
+              <input type="number" id="in-price" class="form-control" min="0" step="1" value="40" required>
+            </div>
+
+            <div class="form-group col-6">
+              <label for="in-received-date">Received Date (YYYY-MM-DD)</label>
+              <input type="date" id="in-received-date" class="form-control" required>
+            </div>
+
+            <div class="form-group col-6">
+              <label for="in-expiry-date">Expiration Date (YYYY-MM-DD)</label>
+              <input type="date" id="in-expiry-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-intake">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span>Save Food Item to Database</span>
+            </button>
+            <button type="reset" class="btn btn-outline">Clear Fields</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 4: STOCK MANAGEMENT (Module C) -->
+    <!-- ============================================================== -->
+    <section class="tab-panel" id="tab-management">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Module C: Warehouse Inventory Maintenance</h1>
+          <p class="panel-desc">Manage existing stock, restock incoming donations, update price or parameters, or write off damaged goods.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Current Qty</th>
+                <th>Base Price</th>
+                <th>Expiry</th>
+                <th>Quick Restock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="management-tbody">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 5: IMPACT ANALYTICS (Module E) -->
+    <!-- ============================================================== -->
+    <section class="tab-panel" id="tab-analytics">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">Module E: Executive Social Impact & Metrics</h1>
+          <p class="panel-desc">Live operational telemetry demonstrating waste diverted, subsidies granted, and transaction audit trails.</p>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card normal">
+          <div class="metric-label">Total Unique SKUs</div>
+          <div class="metric-value" id="stat-total-items">0</div>
+          <div class="metric-sub">Active catalog lines</div>
+        </div>
+        <div class="metric-card normal">
+          <div class="metric-label">Warehouse Stock Units</div>
+          <div class="metric-value" id="stat-total-units">0</div>
+          <div class="metric-sub">Physical food packages</div>
+        </div>
+        <div class="metric-card urgent">
+          <div class="metric-label">Food Waste Prevented</div>
+          <div class="metric-value" id="stat-waste-prevented">0 kg</div>
+          <div class="metric-sub">Cleared before spoiling</div>
+        </div>
+        <div class="metric-card normal">
+          <div class="metric-label">Subsidies Granted</div>
+          <div class="metric-value" id="stat-subsidies-granted">₹0.00</div>
+          <div class="metric-sub">Community food aid value</div>
+        </div>
+        <div class="metric-card warning">
+          <div class="metric-label">Partner Shelters Served</div>
+          <div class="metric-value" id="stat-shelters-served">0</div>
+          <div class="metric-sub">Distribution network</div>
+        </div>
+        <div class="metric-card normal">
+          <div class="metric-label">Total Distributions</div>
+          <div class="metric-value" id="stat-distributions-count">0</div>
+          <div class="metric-sub">Completed transactions</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 1.5rem;">
+        <h2 class="card-title">Distribution Transaction Audit Log</h2>
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Txn ID</th>
+                <th>Item Dispatched</th>
+                <th>Recipient Shelter</th>
+                <th>Qty</th>
+                <th>Original Gross</th>
+                <th>Subsidy %</th>
+                <th>Net Paid</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="analytics-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================== -->
+    <!-- TAB 6: CODE, ARCHITECTURE & VIVA GUIDE -->
+    <!-- ============================================================== -->
+    <section class="tab-panel" id="tab-architecture">
+      <div class="panel-header">
+        <div>
+          <h1 class="panel-title">System Architecture, OOP Principles & Viva Prep</h1>
+          <p class="panel-desc">How ChronoChef maps directly to the college Java OOP Syllabus (Course PBCST304).</p>
+        </div>
+      </div>
+
+      <div class="architecture-grid">
+        <div class="card arch-card">
+          <div class="arch-badge">Module 1 & 2</div>
+          <h3 class="arch-title">Core OOP & Polymorphism</h3>
+          <p class="arch-text">
+            • <b>Encapsulation:</b> <code>FoodItem.java</code> hides private fields behind validated getters/setters.<br>
+            • <b>Inheritance:</b> Hierarchical extension by <code>PerishableItem</code> and <code>PackagedItem</code>.<br>
+            • <b>Dynamic Method Dispatch:</b> Overridden <code>getStorageInstructions()</code> resolved at runtime by the JVM.
+          </p>
+        </div>
+
+        <div class="card arch-card">
+          <div class="arch-badge">Module 1 & 3</div>
+          <h3 class="arch-title">Algorithms & PDI Math</h3>
+          <p class="arch-text">
+            • <b>Days Remaining ($D$):</b> Millisecond delta normalized to midnight.<br>
+            • <b>PDI Formula:</b> $\text{PDI} = \max(1, 100 - (D \times 2))$.<br>
+            • <b>Bubble Sort:</b> In-memory sorting on <code>Vector&lt;FoodItem&gt;</code> in descending urgency order.
+          </p>
+        </div>
+
+        <div class="card arch-card">
+          <div class="arch-badge">Module 3 & 4</div>
+          <h3 class="arch-title">Database & Checked Exceptions</h3>
+          <p class="arch-text">
+            • <b>Singleton Pattern:</b> <code>DatabaseManager.java</code> controls access to <code>chronochef.db</code>.<br>
+            • <b>DAO Pattern:</b> <code>FoodBankDAO.java</code> implements <code>InventoryOperations</code>.<br>
+            • <b>Checked Exception:</b> <code>ExpiredItemDistributionException</code> strictly stops expired distribution.
+          </p>
+        </div>
+
+        <div class="card arch-card">
+          <div class="arch-badge">Module 4</div>
+          <h3 class="arch-title">Swing GUI & Event Delegation</h3>
+          <p class="arch-text">
+            • <b>CardLayout:</b> Single-window architecture switching across 5 views.<br>
+            • <b>Event Delegation:</b> <code>ActionListener</code> binds actions to service routines.<br>
+            • <b>Thread Safety:</b> GUI initialized on the Event Dispatch Thread (EDT).
+          </p>
+        </div>
+      </div>
+
+      <!-- PDF Download Links -->
+      <div class="card doc-banner-card" style="margin-top: 1.5rem;">
+        <div class="doc-banner-content">
+          <div>
+            <h2 class="card-title">Official College Project & Viva Documentation</h2>
+            <p class="panel-desc">All comprehensive reports, pitching guides, and viva defense documents have been compiled into print-ready PDFs.</p>
+          </div>
+          <div class="doc-links-group">
+            <a href="ChronoChef_Pitching_Script_and_Viva_Guide.pdf" class="btn btn-primary" target="_blank">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <span>Download 10-Page Pitching & Viva Guide (PDF)</span>
+            </a>
+            <a href="ChronoChef_Project_Report.pdf" class="btn btn-outline" target="_blank">
+              <span>View Full Project Report (PDF)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Safety Exception Modal (Simulating ExpiredItemDistributionException) -->
+  <div class="modal-backdrop" id="safety-modal">
+    <div class="modal-card">
+      <div class="modal-icon danger">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      </div>
+      <h3 class="modal-title">CRITICAL FOOD SAFETY VIOLATION</h3>
+      <div class="modal-body">
+        <p class="exception-tag">java.exception.ExpiredItemDistributionException</p>
+        <p id="modal-exception-msg">This item has expired and is quarantined under public health food bank regulations. Distribution and subsidy calculations are strictly blocked.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-danger" id="btn-close-modal">Acknowledge & Abort Transaction</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p><b>ChronoChef</b> &copy; 2026 — Smart Dynamic Pricing & Expiry Tracker for Food Banks | Object-Oriented Programming (PBCST304)</p>
+      <p class="footer-meta">Created for 4-Member Group Presentation & Vercel Public Demo</p>
+    </div>
+  </footer>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
